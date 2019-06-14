@@ -1,13 +1,13 @@
 import sys
 
-clients = 'pedro,pablo,juan,'
+clients = ['pedro','pablo','juan']
 
 
 def new_client(client_name):
     global clients
     
     if client_name not in clients:
-        clients += client_name
+        clients.append(client_name)
     else:
         print('The client already is in the client\'s list!')
         
@@ -16,7 +16,8 @@ def update_client(client_to_udate, new_name):
     global clients
     
     if client_to_udate in clients:
-        clients = clients.replace(client_name + ',' , new_name +'')
+        ind = clients.index(client_to_udate)
+        clients[ind] = new_name
     else:
         print('The client isn\'t in the list !')
 
@@ -25,14 +26,13 @@ def delete_client(client_to_delete):
     global clients
     
     if client_to_delete in clients:
-        clients = clients.replace(client_to_delete + ',' , ',')
+        clients.remove(client_to_delete)
     else:
         print('The client isn\'t in the list !')
         
 def search_client(client_name):
-    clients_list = clients.split(',')
-    
-    for client in clients_list:
+
+    for client in clients:
         if client != client_name:
             continue
         else:
@@ -40,9 +40,8 @@ def search_client(client_name):
             
 
 def show_clients():
-    global clients
-    
-    print(clients)
+    for idx, client in enumerate(clients):
+        print('{}: {}'.format(idx, client))
     
 
 def _print_welcome():
@@ -60,7 +59,7 @@ def _get_client_name_input():
     
     while not user_input:
         user_input = input('What is the client name?')
-        if user_input == 'exit'
+        if user_input == 'exit':
             user_input = None
             break
     if not user_input:
