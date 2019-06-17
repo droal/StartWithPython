@@ -1,26 +1,27 @@
 import sys
+import csv
 
-clients = [
-    {
-        'name': 'Pedro',
-        'company': 'Google',
-        'email': 'pedro@google.com',
-        'position': 'Software engineer'
-    },
-    {
-        'name': 'Ricardo',
-        'company': 'Twitter',
-        'email': 'ricardo@teitter.com',
-        'position': 'Data engineer'
-    },
-    {
-        'name': 'Jose',
-        'company': 'Apple',
-        'email': 'jose@apple.com',
-        'position': 'Marketing chief'
-    }
-    ]
+clients = []
+CLIENT_TABLE_FILE = '.Clients.csv'
+CLIENT_SCHEMA = ['name', 'company', 'email', 'position']
 
+def _initialize_clients_from_storage():
+    with opn(CLIENT_TABLE_FILE, mode='r') as f:
+        reader = csv.DictReader(f, fieldnames=CLIENT_SCHEMA)
+        
+        for row in reader:
+            clients.append(row)
+
+
+def _save_clients_to_storage():
+    temp_table = '{}.tmp'.format(CLIENT_TABLE_FILE)
+    with open(temp_table, mode='w') as f:
+        writer = csv.DictWriter(f, filednames=CLIENT_SCHEMA)
+        writer.writerows(clients)
+        
+        os.remove(CLIENT_TABLE_FILE)
+        os.rename(temp_table, CLIENT_TABLE_FILE)
+        
 
 def new_client(client):
     global clients
@@ -93,6 +94,9 @@ def _get_client_input():
     
     
 if __name__ == '__main__':
+    
+    _initialize_clients_from_storage()
+    
     _print_welcome()
     
     command = input()
@@ -104,19 +108,16 @@ if __name__ == '__main__':
     elif command == 'C':
         client = _get_client_input()
         new_client(client)
-        show_clients()
-        
+
     elif command == "D":
         uid_client = int(_get_client_field('uid'))
         delete_client(uid_client)
-        show_clients()
-        
+
     elif command == 'U':
         uid_client = int(_get_client_field('uid'))
         new_client = _get_client_input()
         update_client(uid_client, new_client)
-        show_clients()
-        
+
     elif command == 'S':
         client_name = _get_client_name_input()
         found = search_client(client_name)
@@ -126,4 +127,6 @@ if __name__ == '__main__':
             print('The client: {}, is not in our client\'s list'.format(client_name))
             
     else:
-        print('Invalid command!')
+print('Invalid command!')
+
+_save_clients_to_storage()
