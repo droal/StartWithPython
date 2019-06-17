@@ -1,21 +1,16 @@
 
-PASSWORD = '123456'
-
-def password_required(func):
-    def wrapper():
-        password = input('Ingrese contraseña:')
+def upper(func):
+    """*args: conjunto arbitrario de argumentos posicionales ('Hola', 'Juan', 'Pedro', 'Rubén')"""
+    """*kwargs: conjunto arbitrario de argumentos con keyword (edad='42', profesion='arquitecto', nacionalidad='argentino')"""
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
         
-        if password == PASSWORD:
-            return func()
-        else:
-            print('La contraseña es incorrecta!')
-            
+        return result.upper()
     return wrapper
-
-@password_required
-def needs_pasword():
-    print('La contraseña es correcta!')
-
+        
+@upper
+def my_name(name):
+    return 'Hola, {}'.format(name)
 
 if __name__ == '__main__':
-    needs_pasword()
+    print(my_name('droal'))
